@@ -14,7 +14,7 @@ if (token === undefined) {
 
 const bot = new Telegraf(token);
 
-bot.use(Telegraf.log());
+//bot.use(Telegraf.log());
 bot.use(stage.middleware());
 
 bot.use((ctx, next) => {
@@ -31,7 +31,6 @@ bot.command("add", async (ctx) => {
 bot.command("active", async (ctx) => {
   try {
     const torrents = await Controller.getActiveTorrents();
-    console.log(torrents);
     await ctx.reply(torrents);
   } catch (e) {
     console.error(e);
