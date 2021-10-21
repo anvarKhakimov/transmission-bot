@@ -15,6 +15,7 @@ if (token === undefined) {
 const bot = new Telegraf(token);
 
 //bot.use(Telegraf.log());
+bot.use(session());
 bot.use(stage.middleware());
 
 bot.use((ctx, next) => {
