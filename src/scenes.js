@@ -20,9 +20,9 @@ class SceneGenerator {
         // подписываемся на статус SEED
         Controller.subscribeTorrentDone(ctx, torrent.id, 6);
 
-        await ctx.scene.leave();
+        await ctx.scene.leave(); 
       } catch (e) {
-        ctx.reply('Ошибочка');
+        ctx.reply(e);
         await ctx.scene.leave();
       }
     });

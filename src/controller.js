@@ -67,32 +67,43 @@ async function removeTorrent(id) {
   return result;
 }
 
+// async function getActiveTorrents() {
+//   const allTorrents = await transmission.active();
+//   const result = [];
+//   if (allTorrents.torrents.length > 0) {
+//     for (let i = 0; i < allTorrents.torrents.length; i++) {
+//       result.push({
+//         id: allTorrents.torrents[i].id,
+//         name: allTorrents.torrents[i].name,
+//         status: allTorrents.torrents[i].status,
+//         size: formatBytes(allTorrents.torrents[i].totalSize),
+//         percentDone: allTorrents.torrents[i].percentDone * 100,
+//         addedDate: formatDate(allTorrents.torrents[i].addedDate),
+//         addedDateMs: allTorrents.torrents[i].addedDate * 1000,
+//       });
+//       result[i].status = getStatusType(allTorrents.torrents[i].status);
+//     }
+//   }
+
+//   const arr = result;
+//   const sortByDate = (arr) => {
+//     const sorter = (b, a) => {
+//       return a.addedDateMs - b.addedDateMs;
+//     };
+//     arr.sort(sorter);
+//   };
+
+//   return result;
+// }
+
 async function getActiveTorrents() {
-  const allTorrents = await transmission.active();
+  const allTorrents = await getAllTorrents();
   const result = [];
-  if (allTorrents.torrents.length > 0) {
-    for (let i = 0; i < allTorrents.torrents.length; i++) {
-      result.push({
-        id: allTorrents.torrents[i].id,
-        name: allTorrents.torrents[i].name,
-        status: allTorrents.torrents[i].status,
-        size: formatBytes(allTorrents.torrents[i].totalSize),
-        percentDone: allTorrents.torrents[i].percentDone * 100,
-        addedDate: formatDate(allTorrents.torrents[i].addedDate),
-        addedDateMs: allTorrents.torrents[i].addedDate * 1000,
-      });
-      result[i].status = getStatusType(allTorrents.torrents[i].status);
-    }
+  if (allTorrents.length > 0) {
+    allTorrents.map((torrent)=> {
+      if (torrent.status != 'STOPPED') result.push(torrent);
+    })
   }
-
-  const arr = result;
-  const sortByDate = (arr) => {
-    const sorter = (b, a) => {
-      return a.addedDateMs - b.addedDateMs;
-    };
-    arr.sort(sorter);
-  };
-
   return result;
 }
 
