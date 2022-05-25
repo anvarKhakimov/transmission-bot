@@ -89,16 +89,22 @@ bot.hears(/torrent(.*)/, async (ctx) => {
   try {
     const torrentId = ctx.match[1];
     const torrent = await Controller.getTorrent(torrentId);
+    let buttons = [];
+
+    if(torrent.status == "STOPPED") {
+      buttons.push(Markup.button.callback("▶️ Старт", "start" + torrentId))
+    } else if (["DOWNLOAD", "DOWNLOAD_WAIT", "CHECK", "CHECK_WAIT", "SEED", "SEED_WAIT"].includes(torrent.status)) {
+      buttons.push(Markup.button.callback("✋ Стоп", "stop" + torrentId))
+    } 
+    
+    buttons.push(Markup.button.callback("🗑️ Удалить", "remove" + torrentId))
+
     if (torrent.id) {
       await sendReply(ctx,
 `
 ${torrent.name} 
 [${torrent.status}] [${torrent.addedDate}] [${torrent.size}] [${torrent.percentDone}%] `,
-        Markup.inlineKeyboard([
-          Markup.button.callback("▶️ Старт", "start" + torrentId),
-          Markup.button.callback("✋ Стоп", "stop" + torrentId),
-          Markup.button.callback("🗑️ Удалить", "remove" + torrentId),
-        ])
+        Markup.inlineKeyboard(buttons)
       );
     } else {
       sendReply(ctx, "🙈 Такого торрента нет");
