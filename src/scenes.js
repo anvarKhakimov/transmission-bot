@@ -12,13 +12,14 @@ class SceneGenerator {
       const url = ctx.message.text;
 
       try {
-        var torrent = await Controller.addTorrent(url);
+        let userId = ctx.from.id;
+        let torrent = await Controller.addTorrent(url);
         ctx.reply(`
 ⏳ Начинаем загрузку
 [/torrent${torrent.id}]`);
 
         // подписываемся на статус SEED
-        Controller.subscribeTorrentDone(ctx, torrent.id, 6);
+        Controller.subscribeTorrentDone(ctx, torrent.id, userId);
 
         await ctx.scene.leave(); 
       } catch (e) {

@@ -1,7 +1,7 @@
 require('dotenv').config();
 const Transmission = require('transmission-promise');
 
-var transmission = new Transmission({
+let transmission = new Transmission({
   port: process.env.PORT,
   host: process.env.HOST,
   username: process.env.USERNAME,
@@ -112,22 +112,28 @@ async function waitForState(id, targetState) {
   return result;
 }
 
-async function subscribeTorrentDone(ctx, id) {
-  const torrent = await waitForState(id, 'SEED');
+async function subscribeTorrentDone(ctx, id, userId) {
+  try {
+    console.log("Subscribe to finish for user ", userId);
 
-  if (torrent.status == 6) {
-    ctx.telegram.sendMessage(
-      80938478,
-      `🎉 Загрузка завершена
-${torrent.name}
-[/torrent${torrent.id}]`
-    );
-  } else {
-    ctx.telegram.sendMessage(
-      80938478,
-      `🤬 С ожиданием статуса что-то пошло не так
-    ${torrent}`
-    );
+    const torrent = await waitForState(id, 'SEED');
+
+    if (torrent.status == 6) {
+      ctx.telegram.sendMessage(
+        userId,
+        `🎉 Загрузка завершена
+  ${torrent.name}
+  [/torrent${torrent.id}]`
+      );
+    } else {
+      ctx.telegram.sendMessage(
+        userId,
+        `🤬 С ожиданием статуса что-то пошло не так
+      ${torrent}`
+      );
+    }
+  } catch(e){
+    console.log(e);
   }
 }
 
@@ -166,8 +172,8 @@ function formatBytes(bytes, decimals = 2) {
 }
 
 function formatDate(timestamp) {
-  var date = new Date(timestamp * 1000);
-  var format = date.getDate() + '/' + (date.getMonth() + 1) + '/' + date.getFullYear();
+  let date = new Date(timestamp * 1000);
+  let format = date.getDate() + '/' + (date.getMonth() + 1) + '/' + date.getFullYear();
   return format;
 }
 
